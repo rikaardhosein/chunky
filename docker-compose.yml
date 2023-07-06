@@ -1,0 +1,9 @@
+services:
+  blog:
+    build: ./blog
+  nginx:
+    build: ./nginx 
+  cache:
+    build: ./rcache
+    ports:
+      - "8080:8080"

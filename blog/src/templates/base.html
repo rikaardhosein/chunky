@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Application</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            {% if 'user_id' in session %}
+                <li><a href="/create_post">Create Post</a></li>
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/signup">Sign Up</a></li>
+                <li><a href="/login">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <br>
+    {{ message }}
+    <br>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
+
