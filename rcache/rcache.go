@@ -10,32 +10,6 @@ import (
 	"time"
 )
 
-type Cache struct {
-	data  map[string]string
-	mutex sync.RWMutex
-}
-
-func (c *Cache) Get(key string) (string, bool) {
-	c.mutex.Lock()
-	value, ok := c.data[key]
-	c.mutex.Unlock()
-	return value, ok
-}
-
-func (c *Cache) Set(key, value string) {
-	c.mutex.Lock()
-	c.data[key] = value
-	c.mutex.Unlock()
-}
-
-func (c *Cache) Clear() {
-	c.mutex.Lock()
-	for k := range c.data {
-		delete(c.data, k)
-	}
-	c.mutex.Unlock()
-}
-
 func main() {
 	cache := &Cache{
 		data:  make(map[string]string),
@@ -77,7 +51,7 @@ func handleConnection(conn net.Conn, cache *Cache) {
 
 	serverConn, err := net.Dial("tcp", "nginx:80")
 	if err != nil {
-		fmt.Println("Error reading request:", err.Error())
+		fmt.Println("Error connecting to nginx:", err.Error())
 	}
 	defer serverConn.Close()
 
@@ -99,9 +73,10 @@ func handleConnection(conn net.Conn, cache *Cache) {
 		path := parts[1]
 		version := parts[2]
 
-		fmt.Printf("Received request: %s %s %s", method, path, version)
+		fmt.Printf("Received request: %s %s %s\n", method, path, version)
 
 		headers := make(map[string]string)
+
 		for {
 			line, err := reader.ReadString('\n')
 			if err != nil || line == "\r\n" {
